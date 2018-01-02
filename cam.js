@@ -12,20 +12,27 @@ let Cam = function(x, y, z, radius) {
   }
   this.update = function() {
 
-    this.acc.mult(.9);
-    this.vel.add(this.acc);
-    this.pos.add(this.vel);
-    if (keyIsDown(87)) {
-      let v = createVector(0, 0, -.1);
-      //v = matrixMultiplication(yRotationMatrix(this.Xangle), v);
-      cam.addAcceleration(v);
-    }
+    this.diff = 0;
     if (keyIsDown(65)) {
       this.turn(false);
     }
     if (keyIsDown(68)) {
       this.turn(true);
     }
+    if (keyIsDown(87)) {
+      let v = createVector(0, 0, -.1);
+      //v = matrixMultiplication(yRotationMatrix(this.Xangle), v);
+      cam.addAcceleration(v);
+      this.acc = matrixMultiplication(yRotationMatrix(this.Xangle), this.acc);
+    }
+    //this.acc = matrixMultiplication(yRotationMatrix(this.diff), this.acc);
+    this.pos = matrixMultiplication(yRotationMatrix(this.diff), this.pos);
+    this.vel = matrixMultiplication(yRotationMatrix(this.diff), this.vel);
+    this.diff = 0;
+    this.acc.mult(.9);
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+
   }
   this.addAcceleration = function(acc) {
     this.acc.add(acc);
@@ -37,14 +44,10 @@ let Cam = function(x, y, z, radius) {
       this.diff = oldAngle - this.Xangle;
     }
     if (d) {
-
+      this.Xangle += .01;
+      this.diff = oldAngle - this.Xangle;
     }
 
-
-
-    this.acc = matrixMultiplication(yRotationMatrix(this.diff), this.acc);
-    this.pos = matrixMultiplication(yRotationMatrix(this.diff), this.pos);
-    this.vel = matrixMultiplication(yRotationMatrix(this.diff), this.vel);
 
   }
 
